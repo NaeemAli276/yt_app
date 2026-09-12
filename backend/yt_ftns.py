@@ -4,7 +4,7 @@ import json
 def search_yt(query: str) -> str:
     max_results = 10
 
-    if not query:
+    if query == '':
         return json.dumps([])
 
     search_query = f"ytsearch{max_results}:{query}"
@@ -13,7 +13,8 @@ def search_yt(query: str) -> str:
         'quiet': True,
         'no_warnings': True,
         'skip_download': True,
-        'extract_flat': True,   # optional: much faster for search-only
+        'extract_flat': True, 
+        'approximate_date': True
     }
 
     search_results = []
@@ -28,11 +29,11 @@ def search_yt(query: str) -> str:
                         "id": entry.get('id'),
                         "title": entry.get('title'),
                         "uploader": entry.get('uploader'),
-                        "duration": entry.get('duration_string'),
-                        "url": entry.get('webpage_url'),
+                        "duration": entry.get('duration'),  # seconds, not string
+                        "url": entry.get('url') or f"https://www.youtube.com/watch?v={entry.get('id')}",
                         "views": entry.get('view_count'),
-                        "thumbnail": entry.get('thumbnail'),
-                        "date": entry.get('timestamp'),
+                        "thumbnail": f"https://i.ytimg.com/vi/{entry.get('id')}/hqdefault.jpg",
+                        "date": entry.get('upload_date'),  # still None in flat mode
                     })
 
     return json.dumps(search_results, indent=4)
@@ -50,3 +51,5 @@ def download_song_selected_song(url):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
+
+print(search_yt('food'))

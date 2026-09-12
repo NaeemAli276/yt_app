@@ -1,3 +1,4 @@
+from anaconda_cli_base import console
 from keras.ops import view
 from matplotlib.image import thumbnail
 from fastapi import FastAPI, HTTPException
@@ -26,6 +27,7 @@ app.add_middleware(
 @app.get(path='/{query}')
 async def get_songs(query):
 
+    print(search_yt(query))
     return search_yt(query)
 
 @app.post('/download/')
