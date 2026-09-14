@@ -1,6 +1,10 @@
 import yt_dlp
 import json
 
+def get_avatar_url(handle_or_id: str) -> str:
+    # Works with handles (e.g., "casey") or channel IDs (e.g., "UC...")
+    return f"https://unavatar.io/youtube/{handle_or_id}"
+
 def search_yt(query: str) -> str:
     max_results = 10
 
@@ -13,7 +17,7 @@ def search_yt(query: str) -> str:
         'quiet': True,
         'no_warnings': True,
         'skip_download': True,
-        'extract_flat': True, 
+        # 'extract_flat': True, 
         'approximate_date': True
     }
 
@@ -28,7 +32,8 @@ def search_yt(query: str) -> str:
                     search_results.append({
                         "id": entry.get('id'),
                         "title": entry.get('title'),
-                        "uploader": entry.get('uploader'),
+                        "uploader_name": entry.get('uploader'),
+                        "uploader_uri": get_avatar_url(entry.get('uploader_id')),
                         "duration": entry.get('duration'),  # seconds, not string
                         "url": entry.get('url') or f"https://www.youtube.com/watch?v={entry.get('id')}",
                         "views": entry.get('view_count'),

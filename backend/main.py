@@ -11,6 +11,8 @@ import uvicorn
 from yt_ftns import search_yt, download_song_selected_song
 
 app = FastAPI(title='yt_api')
+# app = FastAPI(title='yt_api', host='192.168.0.13', port=8000, reload=True)
+
 
 origins = [
     "*", 
@@ -22,13 +24,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+)   
 
-@app.get(path='/{query}')
+@app.get(path='/search/{query}')
 async def get_songs(query):
 
-    print(search_yt(query))
-    return search_yt(query)
+    result = search_yt(query)
+    return result
 
 @app.post('/download/')
 async def download_song(url):
